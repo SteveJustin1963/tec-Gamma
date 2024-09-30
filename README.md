@@ -30,7 +30,8 @@ Here’s an outline for running a DIY gamma-ray spectrometry experiment using ha
 - **Electrical Safety**: Ensure all high-voltage components are securely insulated.
 
 
-# For building a **pulse shaping circuit** to filter and amplify the pulses from your gamma-ray detector, here’s a general approach based on various sources:
+# pulse shaping circuit 
+building a to filter and amplify the pulses from your gamma-ray detector, here’s a general approach based on various sources:
 
 ### **1. Transimpedance Amplifier**
 A transimpedance amplifier (TIA) is commonly used in pulse processing for photomultiplier tubes (PMTs). The TIA converts the current pulse from the detector into a voltage pulse. The key to designing a TIA for this application is to select a load resistor that balances time constant and amplification. A typical circuit uses a feedback resistor (R2) that amplifies the pulse based on the equation:  
