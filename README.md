@@ -37,6 +37,8 @@ building a to filter and amplify the pulses from your gamma-ray detector, hereâ€
 A transimpedance amplifier (TIA) is commonly used in pulse processing for photomultiplier tubes (PMTs). The TIA converts the current pulse from the detector into a voltage pulse. The key to designing a TIA for this application is to select a load resistor that balances time constant and amplification. A typical circuit uses a feedback resistor (R2) that amplifies the pulse based on the equation:  
 \[ V_{out} = R2 \times I_{pmt} \]
 This setup can handle high-frequency signals and produce a pulse width of around 50 ns, suitable for gamma spectroscopy.
+- https://en.wikipedia.org/wiki/Transimpedance_amplifier
+
 
 ### **2. Gaussian Shaping Amplifier**
 Another method involves using a shaping amplifier to convert an exponentially decaying signal (typical from PMTs) into a Gaussian-shaped pulse. Gaussian pulse shaping is preferred because it helps reduce noise and increases energy resolution, which is crucial for gamma-ray spectroscopy. This is often implemented using operational amplifiers with feedback, tailored to provide a symmetrical output in the time domain.
