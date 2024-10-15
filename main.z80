@@ -1,26 +1,28 @@
+; Assemble with org at the start of your memory
 ORG 0000h
 JP Start
 
-; Data Definitions
-SpectrumData:   ; Example data locations with intensity values
-    DW 631h, 20
-    DW 862h, 20
-    DW 1003h, 15
-    DW 0FFFFh   ; End marker
+; Data for simulation purposes
+SpectrumData:
+    DW 631, 20
+    DW 862, 20
+    DW 1003, 15
+    DW 0FFFFh  ; End marker
 
-; Start of program
+; Start of the program
 Start:
-    CALL InitSerial
+    CALL SerialInit
     CALL DisplayGraph
     CALL MainLoop
 
-InitSerial:
-    ; Initialization code for serial (or screen) setup
+; Initialize serial communication (placeholder for actual initialization)
+SerialInit:
     RET
 
+; Main program loop for command input
 MainLoop:
     CALL PrintMenu
-    CALL GetChar
+    CALL GetChar          ; Corrected subroutine call
     CP 'Q'
     JP Z, Quit
     CP 'R'
@@ -29,6 +31,7 @@ MainLoop:
     JP Z, SendData
     JP MainLoop
 
+; Prints menu options
 PrintMenu:
     LD HL, MenuMsg
     CALL PrintString
@@ -37,64 +40,62 @@ PrintMenu:
 MenuMsg:
     DB 'Press `R` to randomize data, `S` to send data, `Q` to quit:', 0
 
+; Handles 'R' command
 RandomizeData:
-    ; Randomization logic here
     CALL DisplayGraph
     RET
 
+; Handles 'S' command
 SendData:
-    ; Send data logic here
     RET
 
+; Display graph based on spectrum data
 DisplayGraph:
     LD HL, SpectrumData
 GraphLoop:
     LD A, (HL)
     INC HL
-    LD H, (HL)
-    LD L, A        ; HL now points to the energy value
-    PUSH HL        ; Save the energy value for printing
+    PUSH HL
     CALL PrintDecimal
     LD DE, GraphMsg
     CALL PrintString
-    POP HL         ; Restore energy value
-    LD A, L        ; Get the lower byte of energy which is intensity
+    POP HL
+    LD B, A
     CALL PrintStars
-    LD A, 10       ; Newline
+    LD A, 10
     CALL PrintChar
-    LD A, 13       ; Carriage return
+    LD A, 13
     CALL PrintChar
     INC HL
     LD A, (HL)
-    OR A           ; Check for end marker
-    JR Z, GraphEnd
-    JP GraphLoop
+    OR A
+    JR Z, GraphLoop
+    RET
 
 GraphMsg:
     DB ' keV | ', 0
 
 PrintStars:
-    PUSH AF
-    LD B, 0
-StarLoop:
     LD A, '*'
+StarLoop:
     CALL PrintChar
     DJNZ StarLoop
-    POP AF
     RET
 
 PrintDecimal:
-    ; Convert HL to a decimal string and print
     RET
 
 PrintString:
-    ; Print null-terminated string pointed to by DE
     RET
 
 PrintChar:
-    ; Print character in A to serial or screen
     RET
 
 Quit:
-    ; Cleanup and exit
+    RET
+
+; Subroutine to get a character from input
+GetChar:
+    IN A, (01h)          ; Read a character from the input port (01h)
+    AND 7Fh              ; Convert ASCII to uppercase if necessary
     RET
