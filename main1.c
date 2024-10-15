@@ -1,37 +1,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>  // Include for uint32_t type
+#include <time.h>    // Include for time function
 
-// Function to initialize the gamma spectrometer
-void initialize_detector() {
-    printf("Initializing the detector...\n");
-}
+#define SPECTRUM_SIZE 1024
 
-// Function to load dummy spectrum data for testing
-void load_dummy_spectrum(double *spectrum, int size) {
-    memset(spectrum, 0, size * sizeof(double));  // Clear the spectrum array
-    
-    // Load dummy data simulating peaks at specific energy levels
-    if (size > 300) spectrum[300] = 200; // Example: Cs-137 at ~300 keV
-    if (size > 600) spectrum[600] = 150; // Example: Co-60 at ~600 keV
-    if (size > 1000) spectrum[1000] = 180; // Example: I-131 at ~1000 keV
-}
+// Simulated spectrum data array
+double spectrum[SPECTRUM_SIZE] = {0};
 
-// Simple peak detection
-void analyze_spectrum(const double *spectrum, int size) {
-    printf("Analyzing spectrum...\n");
-    for (int i = 0; i < size; i++) {
-        if (spectrum[i] > 100) { // Threshold for peak detection set at 100 counts
-            printf("Peak detected at energy bin %d with %f counts\n", i, spectrum[i]);
-        }
+// Function to initialize the spectrum with random data for testing
+void initialize_spectrum() {
+    srand(time(NULL)); // Seed the random number generator
+    for (int i = 0; i < SPECTRUM_SIZE; i++) {
+        spectrum[i] = 0; // Reset spectrum data
     }
+    // Add random peaks in the spectrum
+    spectrum[rand() % SPECTRUM_SIZE] = rand() % 100 + 100;
+    spectrum[rand() % SPECTRUM_SIZE] = rand() % 100 + 100;
+    spectrum[rand() % SPECTRUM_SIZE] = rand() % 100 + 100;
 }
 
-// Function to display results with a simple ASCII graph
-void display_results(const double *spectrum, int size) {
-    printf("Displaying results...\n");
+// Function to display the spectrum with a simple ASCII graph
+void display_spectrum() {
     printf("Spectrum Analysis Graph (Intensity by Energy Bin):\n");
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < SPECTRUM_SIZE; i++) {
         if (spectrum[i] > 0) {
             printf("%4d keV | ", i);
             int numAsterisks = spectrum[i] / 10; // Scale factor to reduce graph width
@@ -43,33 +36,20 @@ void display_results(const double *spectrum, int size) {
     }
 }
 
-// Main function
+// Main function with user menu
 int main() {
-    printf("Gamma Spectrometry Program\n");
+    char choice;
+    initialize_spectrum();
+    display_spectrum();
 
-    // Initialize the detector
-    initialize_detector();
-    
-    // Define the size of the spectrum array
-    const int spectrum_size = 1024;
-    double *spectrum = (double *)malloc(spectrum_size * sizeof(double));
+    do {
+        printf("Press 'R' to randomize data and recompute, 'Q' to quit:\n");
+        scanf(" %c", &choice);
+        if (choice == 'R' || choice == 'r') {
+            initialize_spectrum();
+            display_spectrum();
+        }
+    } while (choice != 'Q' && choice != 'q');
 
-    if (spectrum == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        return EXIT_FAILURE;
-    }
-
-    // Load dummy spectrum data
-    load_dummy_spectrum(spectrum, spectrum_size);
-    
-    // Analyze the captured spectrum
-    analyze_spectrum(spectrum, spectrum_size);
-
-    // Display the results with ASCII graph
-    display_results(spectrum, spectrum_size);
-
-    // Clean up resources
-    free(spectrum);
-
-    return EXIT_SUCCESS;
+    return 0;
 }
